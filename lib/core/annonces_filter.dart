@@ -3,7 +3,7 @@ import 'package:soon/core/annonce.dart';
 abstract class AnnoncesFilter {
   List<String> keywordsToRemove();
 
-  List<Annonce> filterValidAnnonces(List<Annonce> annonces) {
+  List<Annonce> neGardeQueLesAnnoncesValides(List<Annonce> annonces) {
     return annonces.where((annonce) => _estUneAnnonceValide(annonce)).toList();
   }
 

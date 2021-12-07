@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:html/parser.dart' show parse;
 import 'package:soon/terrasse_en_ville/terrasse_en_ville_filter.dart';
 import 'package:soon/terrasse_en_ville/terrasse_en_ville_parser.dart';
 
@@ -30,7 +29,7 @@ import 'test_assets.dart';
  */
 void main() {
   test('parse', () {
-    final annonces = TerrasseEnVilleParser().parse(parse(loadTestAssets("terrasse-en-ville.html")));
+    final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets("terrasse-en-ville.html"));
     expect(annonces.length, 16);
     expect(annonces.first.titre, "MAZARGUES - APPARTEMENT T2 - 45 M2 - TERRASSE - PARKING - 249 000 €");
     expect(
@@ -45,8 +44,8 @@ void main() {
   });
 
   test('filtre', () {
-    final annonces = TerrasseEnVilleParser().parse(parse(loadTestAssets("terrasse-en-ville.html")));
-    final annoncesFiltrees = TerrasseEnVilleFilter().filterValidAnnonces(annonces);
+    final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets("terrasse-en-ville.html"));
+    final annoncesFiltrees = TerrasseEnVilleFilter().neGardeQueLesAnnoncesValides(annonces);
     expect(annoncesFiltrees.length, 2);
   });
 }
