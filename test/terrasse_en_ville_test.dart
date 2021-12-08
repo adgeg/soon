@@ -30,7 +30,7 @@ import 'test_assets.dart';
 void main() {
   test('parse', () {
     final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets("terrasse-en-ville.html"));
-    expect(annonces.length, 16);
+    expect(annonces.length, 17);
     expect(annonces.first.titre, "MAZARGUES - APPARTEMENT T2 - 45 M2 - TERRASSE - PARKING - 249 000 €");
     expect(
       annonces.first.imageUrl,
