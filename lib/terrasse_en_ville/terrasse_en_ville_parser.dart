@@ -19,5 +19,8 @@ class TerrasseEnVilleParser implements AnnoncesParser {
         .toList();
   }
 
-  bool _estUneAnnonce(Element e) => e.children[0].attributes["href"]!.startsWith("/annonces");
+  bool _estUneAnnonce(Element e) {
+    final href = e.children[0].attributes["href"]!;
+    return href.startsWith("/annonces") || href.startsWith("/location");
+  }
 }

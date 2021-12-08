@@ -28,24 +28,51 @@ import 'test_assets.dart';
 </div>
  */
 void main() {
-  test('parse', () {
-    final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets("terrasse-en-ville.html"));
-    expect(annonces.length, 17);
-    expect(annonces.first.titre, "MAZARGUES - APPARTEMENT T2 - 45 M2 - TERRASSE - PARKING - 249 000 €");
-    expect(
-      annonces.first.imageUrl,
-      "https://images.squarespace-cdn.com/content/v1/5ac338c57106998b66912a94/1632481934077-0XLWFKHRX87IM1Y4J3QG/IMG_9513_4_5_6_7.jpg",
-    );
-    expect(
-      annonces.first.url,
-      "https://www.terrasse-en-ville.com/annonces-immobiliere-marseille/mazargues-appartement-t2-45-m2-terrasse-parking-249-000-",
-    );
-    expect(annonces.first.agence, "Terrasse en ville");
+  group('achats', () {
+    const path = "terrasse-en-ville-achats.html";
+    test('parse', () {
+      final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets(path));
+      expect(annonces.length, 17);
+      expect(annonces.first.titre, "MAZARGUES - APPARTEMENT T2 - 45 M2 - TERRASSE - PARKING - 249 000 €");
+      expect(
+        annonces.first.imageUrl,
+        "https://images.squarespace-cdn.com/content/v1/5ac338c57106998b66912a94/1632481934077-0XLWFKHRX87IM1Y4J3QG/IMG_9513_4_5_6_7.jpg",
+      );
+      expect(
+        annonces.first.url,
+        "https://www.terrasse-en-ville.com/annonces-immobiliere-marseille/mazargues-appartement-t2-45-m2-terrasse-parking-249-000-",
+      );
+      expect(annonces.first.agence, "Terrasse en ville");
+    });
+
+    test('filtre', () {
+      final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets(path));
+      final annoncesFiltrees = TerrasseEnVilleFilter().neGardeQueLesAnnoncesValides(annonces);
+      expect(annoncesFiltrees.length, 2);
+    });
   });
 
-  test('filtre', () {
-    final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets("terrasse-en-ville.html"));
-    final annoncesFiltrees = TerrasseEnVilleFilter().neGardeQueLesAnnoncesValides(annonces);
-    expect(annoncesFiltrees.length, 2);
+  group('locations', () {
+    const path = "terrasse-en-ville-locations.html";
+    test('parse', () {
+      final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets(path));
+      expect(annonces.length, 2);
+      expect(annonces.first.titre, "Vauban - Duplex T5 - Terrasse - 2 400 €");
+      expect(
+        annonces.first.imageUrl,
+        "https://images.squarespace-cdn.com/content/v1/5ac338c57106998b66912a94/1636563794028-2YQGYVCNC80O969WPK7P/terrasse.jpg",
+      );
+      expect(
+        annonces.first.url,
+        "https://www.terrasse-en-ville.com/location/vauban-duplex-t5-terrasse-balcon-parking-notredame",
+      );
+      expect(annonces.first.agence, "Terrasse en ville");
+    });
+
+    test('filtre', () {
+      final annonces = TerrasseEnVilleParser().parseHtml(loadTestAssets(path));
+      final annoncesFiltrees = TerrasseEnVilleFilter().neGardeQueLesAnnoncesValides(annonces);
+      expect(annoncesFiltrees.length, 2);
+    });
   });
 }
