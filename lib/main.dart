@@ -12,8 +12,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Soon',
-      theme: ThemeData(primarySwatch: Colors.indigo),
+      theme: ThemeData(primarySwatch: primaryBlack),
       home: const MainPage(),
     );
   }
 }
+
+const MaterialColor primaryBlack = MaterialColor(
+  0xFF000000,
+  <int, Color>{
+    50: Colors.black12,
+    100: Colors.black12,
+    200: Colors.black26,
+    300: Colors.black38,
+    400: Colors.black38,
+    500: Colors.black,
+    600: Colors.black54,
+    700: Colors.black54,
+    800: Colors.black87,
+    900: Colors.black87,
+  },
+);

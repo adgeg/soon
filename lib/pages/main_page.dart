@@ -67,38 +67,41 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _annonce(BuildContext context, Annonce annonce) {
-    return GestureDetector(
-      onTap: () {
-        launch(annonce.url, customTabsOption: CustomTabsOption(toolbarColor: Theme.of(context).primaryColor));
-      },
-      child: Card(
-        elevation: 2,
-        child: Stack(
-          children: [
-            Image.network(annonce.imageUrl),
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  color: const Color(0xCC3F51B5),
-                  child: Center(
-                    child: Text(
-                      annonce.titre,
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: -0.3,
-                        color: Colors.white,
-                      ),
-                    ),
+    return Stack(
+      children: [
+        Image.network(annonce.imageUrl),
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 48,
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              color: const Color(0x88000000),
+              child: Center(
+                child: Text(
+                  annonce.titre,
+                  style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: -0.3,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              splashColor: const Color(0x11000000),
+              onTap: () {
+                launch(annonce.url, customTabsOption: CustomTabsOption(toolbarColor: Theme.of(context).primaryColor));
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
