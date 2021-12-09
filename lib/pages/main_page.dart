@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soon/core/annonce.dart';
-import 'package:soon/terrasse_en_ville/terrasse_en_ville_use_case.dart';
+import 'package:soon/core/annonces_provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -12,13 +12,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final useCase = TerrasseEnVilleUseCase();
+  final provider = AnnoncesProvider();
   late Future<List<Annonce>> _annonces;
 
   @override
   void initState() {
     super.initState();
-    _annonces = useCase.annonces();
+    _annonces = provider.annonces();
   }
 
   @override
@@ -61,7 +61,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _refreshAnnonces() async {
-    _annonces = Future.value(await useCase.annonces());
+    _annonces = Future.value(await provider.annonces());
     setState(() {});
     return;
   }
@@ -69,7 +69,7 @@ class _MainPageState extends State<MainPage> {
   Widget _annonce(BuildContext context, Annonce annonce) {
     return Stack(
       children: [
-        Image.network(annonce.imageUrl),
+        Image.network(annonce.imageUrl, height: 240, width: double.infinity, fit: BoxFit.fitWidth),
         Positioned.fill(
           child: Align(
             alignment: Alignment.bottomCenter,

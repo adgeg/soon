@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.octo.soon">
    <application
-        android:label="soon"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Soon"
+           android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

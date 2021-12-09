@@ -1,7 +1,7 @@
 import 'package:soon/core/annonce.dart';
 
 abstract class AnnoncesFilter {
-  List<String> keywordsToRemove();
+  List<String> keywordsToRemove() => ["VENDU", "SOUS OFFRE", "SOUS PROMESSE", "COMPROMIS"];
 
   List<Annonce> neGardeQueLesAnnoncesValides(List<Annonce> annonces) {
     return annonces.where((annonce) => _estUneAnnonceValide(annonce)).toList();
@@ -9,10 +9,11 @@ abstract class AnnoncesFilter {
 
   bool _estUneAnnonceValide(Annonce annonce) {
     for (var keyword in keywordsToRemove()) {
-      if (titrePretPourLeFiltre(annonce).contains(keyword.toLowerCase())) return false;
+      if (_textePretPourLeFiltre(annonce.titre)?.contains(keyword.toLowerCase()) == true) return false;
+      if (_textePretPourLeFiltre(annonce.statut)?.contains(keyword.toLowerCase()) == true) return false;
     }
     return true;
   }
 
-  String titrePretPourLeFiltre(Annonce annonce) => annonce.titre.toLowerCase().replaceAll("-", " ");
+  String? _textePretPourLeFiltre(String? texte) => texte?.toLowerCase().replaceAll("-", " ");
 }
