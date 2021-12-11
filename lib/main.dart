@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soon/data/skipped_annonces_repository.dart';
 import 'package:soon/pages/main_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SkippedAnnoncesRepository.setPreferences(await SharedPreferences.getInstance());
   runApp(const MyApp());
 }
 

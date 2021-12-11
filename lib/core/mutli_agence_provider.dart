@@ -3,6 +3,7 @@ import 'package:soon/agences/archik/archik_use_case.dart';
 import 'package:soon/agences/ma_terrasse_a_marseille/ma_terrasse_a_marseille_use_case.dart';
 import 'package:soon/agences/terrasse_en_ville/terrasse_en_ville_use_case.dart';
 import 'package:soon/core/use_case.dart';
+import 'package:soon/data/skipped_annonces_repository.dart';
 
 import 'annonce.dart';
 
@@ -14,6 +15,12 @@ class MultiAgencesProvider {
   ];
 
   Stream<List<Annonce>> annonces() {
-    return StreamGroup.merge(useCases.map((e) => e.annonces()));
+    return StreamGroup.merge(useCases.map((useCase) => useCase.annonces())).map(
+      (annonces) => annonces
+          .where(
+            (annonce) => !SkippedAnnoncesRepository.skippedAnnoncesUrl().contains(annonce.url),
+          )
+          .toList(),
+    );
   }
 }
