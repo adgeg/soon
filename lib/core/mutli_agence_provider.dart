@@ -13,5 +13,7 @@ class MultiAgencesProvider {
     TerrasseEnVilleUseCase(),
   ];
 
-  Stream<List<Annonce>> annonces() => StreamGroup.merge(useCases.map((e) => e.annonces()));
+  Stream<List<Annonce>> annonces() {
+    return StreamGroup.merge(useCases.map((e) => e.annonces()));
+  }
 }

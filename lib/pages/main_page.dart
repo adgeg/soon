@@ -13,7 +13,7 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-enum DisplayState { loading, annonces, error }
+enum DisplayState { loading, annonces, rienDeNeuf, error }
 
 class _MainPageState extends State<MainPage> {
   final provider = MultiAgencesProvider();
@@ -52,12 +52,18 @@ class _MainPageState extends State<MainPage> {
   void _initSubscription() {
     _subscription = provider.annonces().listen((annonces) {
       _displayedAnnonces.addAll(annonces);
-      _displayState = DisplayState.annonces;
+      if (_displayedAnnonces.isNotEmpty) _displayState = DisplayState.annonces;
       setState(() {});
     });
     _subscription.onError((_) {
       _displayState = DisplayState.error;
       setState(() {});
+    });
+    _subscription.onDone(() {
+      if (_displayedAnnonces.isEmpty) {
+        _displayState = DisplayState.rienDeNeuf;
+        setState(() {});
+      }
     });
   }
 
@@ -74,8 +80,10 @@ class _MainPageState extends State<MainPage> {
         return _loader();
       case DisplayState.annonces:
         return _annonces();
+      case DisplayState.rienDeNeuf:
+        return _message(Icons.lock_clock, "Pas cette fois-ci non…");
       case DisplayState.error:
-        return _error();
+        return _message(Icons.error_outline, "A donde esta el réseau por favor?");
     }
   }
 
@@ -134,14 +142,17 @@ class _MainPageState extends State<MainPage> {
 
   Center _loader() => const Center(child: CircularProgressIndicator());
 
-  Center _error() {
+  Center _message(IconData icon, String text) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
-          Icon(Icons.error_outline, color: Colors.red),
-          Padding(padding: EdgeInsets.only(top: 16), child: Text('Oups, pas cette fois ci…')),
+        children: [
+          const Icon(Icons.error_outline, color: Colors.black),
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Text(text, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3)),
+          ),
         ],
       ),
     );
