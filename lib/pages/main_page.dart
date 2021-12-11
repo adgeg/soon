@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soon/core/annonce.dart';
-import 'package:soon/core/annonces_provider.dart';
+import 'package:soon/core/mutli_agence_provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -11,42 +13,73 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+enum DisplayState { loading, annonces, error }
+
 class _MainPageState extends State<MainPage> {
-  final provider = AnnoncesProvider();
-  late Future<List<Annonce>> _annonces;
+  final provider = MultiAgencesProvider();
+  final List<Annonce> _displayedAnnonces = [];
+  late StreamSubscription _subscription;
+  late DisplayState _displayState;
 
   @override
   void initState() {
     super.initState();
-    _annonces = provider.annonces();
+    _displayState = DisplayState.loading;
+    _initSubscription();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Center(
-        child: Text("Soon", style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3)),
-      )),
-      body: FutureBuilder(
-        future: _annonces,
-        builder: (context, snapshot) {
-          Widget child;
-          if (snapshot.hasData) {
-            final List<Annonce> annonces = snapshot.data as List<Annonce>;
-            child = _contenu(context, annonces);
-          } else if (snapshot.hasError) {
-            child = _erreur(snapshot);
-          } else {
-            child = _loader();
-          }
-          return child;
-        },
+        title: Center(
+          child: Text(
+            "Soon",
+            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3),
+          ),
+        ),
       ),
+      body: _content(),
     );
   }
 
-  Widget _contenu(BuildContext context, List<Annonce> annonces) {
+  void _initSubscription() {
+    _subscription = provider.annonces().listen((annonces) {
+      _displayedAnnonces.addAll(annonces);
+      _displayState = DisplayState.annonces;
+      setState(() {});
+    });
+    _subscription.onError((_) {
+      _displayState = DisplayState.error;
+      setState(() {});
+    });
+  }
+
+  Future<void> _refreshAnnonces() async {
+    _displayedAnnonces.clear();
+    _subscription.cancel();
+    _initSubscription();
+    return;
+  }
+
+  Widget _content() {
+    switch (_displayState) {
+      case DisplayState.loading:
+        return _loader();
+      case DisplayState.annonces:
+        return _annonces();
+      case DisplayState.error:
+        return _error();
+    }
+  }
+
+  Widget _annonces() {
     return RefreshIndicator(
       key: UniqueKey(),
       onRefresh: () async {
@@ -54,19 +87,13 @@ class _MainPageState extends State<MainPage> {
         return;
       },
       child: ListView.builder(
-        itemCount: annonces.length,
-        itemBuilder: (BuildContext context, int index) => _annonce(context, annonces[index]),
+        itemCount: _displayedAnnonces.length,
+        itemBuilder: (BuildContext context, int index) => _annonce(_displayedAnnonces[index]),
       ),
     );
   }
 
-  Future<void> _refreshAnnonces() async {
-    _annonces = Future.value(await provider.annonces());
-    setState(() {});
-    return;
-  }
-
-  Widget _annonce(BuildContext context, Annonce annonce) {
+  Widget _annonce(Annonce annonce) {
     return Stack(
       children: [
         Image.network(annonce.imageUrl, height: 240, width: double.infinity, fit: BoxFit.fitWidth),
@@ -107,17 +134,14 @@ class _MainPageState extends State<MainPage> {
 
   Center _loader() => const Center(child: CircularProgressIndicator());
 
-  Center _erreur(AsyncSnapshot<Object?> snapshot) {
+  Center _error() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, color: Colors.red),
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Text('Error: ${snapshot.error}'),
-          ),
+        children: const [
+          Icon(Icons.error_outline, color: Colors.red),
+          Padding(padding: EdgeInsets.only(top: 16), child: Text('Oups, pas cette fois ci…')),
         ],
       ),
     );

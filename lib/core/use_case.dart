@@ -1,3 +1,4 @@
+import 'package:async/async.dart' show StreamGroup;
 import 'package:soon/core/annonce.dart';
 import 'package:soon/core/annonces_filter.dart';
 import 'package:soon/core/annonces_parser.dart';
@@ -12,14 +13,13 @@ abstract class UseCase {
 
   UseCase(this.parser, this.filter);
 
-  Future<List<Annonce>> annonces() async {
-    final List<Annonce> annonces = [];
-    for (var url in urls()) {
-      final html = await repository.getHtml(url);
-      if (html == null) continue;
-      final toutesLesAnnonces = parser.parseHtml(html);
-      annonces.addAll(filter.neGardeQueLesAnnoncesValides(toutesLesAnnonces));
-    }
-    return annonces;
+  Stream<List<Annonce>> annonces() =>
+      StreamGroup.mergeBroadcast(urls().map((url) => Stream.fromFuture(_annoncesForUrl(url))));
+
+  Future<List<Annonce>> _annoncesForUrl(String url) async {
+    final html = await repository.getHtml(url);
+    if (html == null) return [];
+    final toutesLesAnnonces = parser.parseHtml(html);
+    return filter.neGardeQueLesAnnoncesValides(toutesLesAnnonces);
   }
 }
