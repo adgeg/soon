@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:soon/core/annonce.dart';
 import 'package:soon/core/mutli_agence_provider.dart';
 import 'package:soon/data/skipped_annonces_repository.dart';
@@ -39,14 +38,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black26,
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "Soon",
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3),
-          ),
-        ),
-      ),
+      appBar: AppBar(title: const Center(child: Text("Soon"))),
       body: RefreshIndicator(
         key: UniqueKey(),
         onRefresh: () async => await _refreshAnnonces(),
@@ -122,13 +114,7 @@ class _MainPageState extends State<MainPage> {
                 height: 48,
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 color: const Color(0x88000000),
-                child: Center(
-                  child: Text(
-                    annonce.titre,
-                    style:
-                        GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3, color: Colors.white),
-                  ),
-                ),
+                child: Center(child: Text(annonce.titre)),
               ),
             ),
           ),
@@ -148,28 +134,22 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _loader() => const Center(child: CircularProgressIndicator());
+  Widget _loader() => const Center(child: CircularProgressIndicator(color: Colors.white));
 
   Widget _message(IconData icon, String text) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      child: Center(
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 1 / 3),
-            Icon(
-              icon,
-              color: Colors.white,
-              size: 96,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Text(
-                text,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3, color: Colors.white),
-              ),
-            ),
-          ],
+      child: Container(
+        height: MediaQuery.of(context).size.height - 56,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 96),
+              Padding(padding: const EdgeInsets.only(top: 16), child: Text(text)),
+            ],
+          ),
         ),
       ),
     );
