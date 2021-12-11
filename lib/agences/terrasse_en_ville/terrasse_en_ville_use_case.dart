@@ -1,9 +1,9 @@
+import 'package:soon/agences/terrasse_en_ville/terrasse_en_ville_parser.dart';
+import 'package:soon/core/annonces_filter.dart';
 import 'package:soon/core/use_case.dart';
-import 'package:soon/terrasse_en_ville/terrasse_en_ville_filter.dart';
-import 'package:soon/terrasse_en_ville/terrasse_en_ville_parser.dart';
 
 class TerrasseEnVilleUseCase extends UseCase {
-  TerrasseEnVilleUseCase() : super(TerrasseEnVilleParser(), TerrasseEnVilleFilter());
+  TerrasseEnVilleUseCase() : super(TerrasseEnVilleParser(), AnnoncesFilter());
 
   @override
   List<String> urls() => [

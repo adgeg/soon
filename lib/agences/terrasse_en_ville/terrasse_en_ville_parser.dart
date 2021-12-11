@@ -23,4 +23,7 @@ class TerrasseEnVilleParser implements AnnoncesParser {
     final href = e.children[0].attributes["href"]!;
     return href.startsWith("/annonces") || href.startsWith("/location");
   }
+
+  @override
+  String? prix(Element e) => null;
 }

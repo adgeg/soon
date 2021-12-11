@@ -1,6 +1,6 @@
 import 'package:soon/core/annonce.dart';
 
-abstract class AnnoncesFilter {
+class AnnoncesFilter {
   List<String> keywordsToRemove() => ["VENDU", "SOUS OFFRE", "SOUS PROMESSE", "COMPROMIS"];
 
   List<Annonce> neGardeQueLesAnnoncesValides(List<Annonce> annonces) {

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:soon/ma_terrasse_a_marseille/ma_terrasse_a_marseille_filter.dart';
-import 'package:soon/ma_terrasse_a_marseille/ma_terrasse_a_marseille_parser.dart';
+import 'package:soon/agences/ma_terrasse_a_marseille/ma_terrasse_a_marseille_filter.dart';
+import 'package:soon/agences/ma_terrasse_a_marseille/ma_terrasse_a_marseille_parser.dart';
 
 import 'test_assets.dart';
 

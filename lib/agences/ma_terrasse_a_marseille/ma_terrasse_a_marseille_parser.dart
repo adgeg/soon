@@ -30,4 +30,7 @@ class MaTerrasseAMarseilleParser implements AnnoncesParser {
       .attributes["src"]!;
 
   int _toInt(String prixEnTexte) => int.parse(prixEnTexte.replaceAll("€", "").replaceAll(" ", "").replaceAll(" ", ""));
+
+  @override
+  String? prix(Element e) => e.getElementsByClassName("rh_prop_card__price").first.text.trim();
 }
