@@ -14,4 +14,10 @@ class Annonce {
     this.prix,
     this.statut,
   });
+
+  @override
+  bool operator ==(Object o) => identical(this, o) || o is Annonce && runtimeType == o.runtimeType && url == o.url;
+
+  @override
+  int get hashCode => url.hashCode;
 }
