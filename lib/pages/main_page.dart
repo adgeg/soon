@@ -140,7 +140,13 @@ class _MainPageState extends State<MainPage> {
             opacity: value,
             child: Stack(
               children: [
-                Image.network(annonce.imageUrl, height: 240, width: double.infinity, fit: BoxFit.fitWidth),
+                FadeInImage.memoryNetwork(
+                  image: annonce.imageUrl,
+                  placeholder: kTransparentImage,
+                  height: 240,
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
+                ),
                 Positioned.fill(
                   child: Align(
                     alignment: Alignment.bottomCenter,
