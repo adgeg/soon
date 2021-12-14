@@ -5,6 +5,7 @@ import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:soon/core/annonce.dart';
 import 'package:soon/core/mutli_agence_provider.dart';
 import 'package:soon/data/skipped_annonces_repository.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class MainPage extends StatefulWidget {
 enum DisplayState { loading, annonces, rienDeNeuf, error }
 
 class _MainPageState extends State<MainPage> {
-  final provider = MultiAgencesProvider();
+  final MultiAgencesProvider _provider = MultiAgencesProvider();
   final List<Annonce> _displayedAnnonces = [];
   final List<Annonce> _previousDisplayedAnnonces = [];
   late StreamSubscription _subscription;
@@ -41,7 +42,6 @@ class _MainPageState extends State<MainPage> {
       backgroundColor: Colors.black26,
       appBar: AppBar(title: const Center(child: Text("Soon"))),
       body: RefreshIndicator(
-        key: UniqueKey(),
         onRefresh: () async => await _refreshAnnonces(),
         child: _content(),
       ),
@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _initSubscription() {
-    _subscription = provider.annonces().listen((annonces) {
+    _subscription = _provider.annonces().listen((annonces) {
       _displayedAnnonces.addAll(annonces);
       if (annonces.isNotEmpty) {
         _displayState = DisplayState.annonces;
@@ -90,7 +90,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _annonces() {
-    final listView = ListView.builder(
+    Future.delayed(const Duration(milliseconds: 0), () => _previousDisplayedAnnonces.addAll(_displayedAnnonces));
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: _displayedAnnonces.length,
       itemBuilder: (BuildContext context, int index) {
         final annonce = _displayedAnnonces[index];
@@ -100,10 +102,7 @@ class _MainPageState extends State<MainPage> {
           animateAppearance: !_previousDisplayedAnnonces.contains(annonce),
         );
       },
-      physics: const AlwaysScrollableScrollPhysics(),
     );
-    Future.delayed(const Duration(milliseconds: 50), () => _previousDisplayedAnnonces.addAll(_displayedAnnonces));
-    return listView;
   }
 
   Widget _annonce({required Annonce annonce, required int annonceIndex, required bool animateAppearance}) {
@@ -116,7 +115,7 @@ class _MainPageState extends State<MainPage> {
       animationDelay: animationDelay,
     );
     return Dismissible(
-      key: ValueKey(annonce.url),
+      key: Key(annonce.url),
       onDismissed: (direction) {
         setState(() {
           SkippedAnnoncesRepository.skipAnnonce(annonce);
@@ -196,6 +195,7 @@ class _MainPageState extends State<MainPage> {
 
   double _beginDelayed({required int annonceIndex, required int animationDuration, required int animationDelay}) {
     /*
+    Si animationDuration = 400 et animationDelay = 200, alors :
     [0] durée : 400   0 -> 400 => 400/400 begin = 1 - 400/400
     [1] durée : 600   0 -> 200 puis animation de 200 à  600 => Interval begin = 1 - 400/600
     [2] durée : 800   0 -> 400 puis animation de 400 à  800 => Interval begin = 1 - 400/800
