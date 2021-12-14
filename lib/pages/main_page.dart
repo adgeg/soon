@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
@@ -38,13 +39,45 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black26,
-      appBar: AppBar(title: const Center(child: Text("Soon"))),
-      body: RefreshIndicator(
-        onRefresh: () async => await _refreshAnnonces(),
-        child: _content(),
-      ),
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter, // 10% of the width, so there are ten blinds.
+              stops: [0, 0.6, 1],
+              colors: [
+                Color(0xFFFF5678),
+                Color(0xFF5200FF),
+                Color(0xFF0094FF),
+              ], // red to yellow
+            ),
+          ),
+        ),
+        Transform.translate(
+          offset: const Offset(-400, 0),
+          child: Transform.rotate(
+            angle: -3.14159 / 5.5,
+            child: Transform.scale(
+              scale: 2,
+              child: Container(color: const Color(0x0FFFFFFF)),
+            ),
+          ),
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: const Center(child: Text("Soon")),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          body: RefreshIndicator(
+            onRefresh: () async => await _refreshAnnonces(),
+            child: _content(),
+          ),
+        )
+      ],
     );
   }
 
@@ -145,16 +178,27 @@ class _MainPageState extends State<MainPage> {
                   placeholder: kTransparentImage,
                   height: 240,
                   width: double.infinity,
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.cover,
                 ),
                 Positioned.fill(
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Container(
+                    child: SizedBox(
                       height: 48,
-                      padding: const EdgeInsets.only(left: 8, right: 8),
-                      color: const Color(0x88000000),
-                      child: Center(child: Text(annonce.titre)),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                              child: Container(color: const Color(0x88FFFFFF)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8, right: 8),
+                            child: Center(child: Text(annonce.titre, style: Theme.of(context).textTheme.bodyText1)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -183,7 +227,7 @@ class _MainPageState extends State<MainPage> {
   Widget _message(IconData icon, String text) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      child: Container(
+      child: SizedBox(
         height: MediaQuery.of(context).size.height - 56,
         child: Center(
           child: Column(
@@ -191,7 +235,10 @@ class _MainPageState extends State<MainPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 96),
-              Padding(padding: const EdgeInsets.only(top: 16), child: Text(text)),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(text, style: Theme.of(context).textTheme.headline5),
+              ),
             ],
           ),
         ),

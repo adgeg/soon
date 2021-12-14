@@ -22,15 +22,20 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.black,
         appBarTheme: AppBarTheme(
           titleTextStyle: GoogleFonts.montserrat(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
             letterSpacing: -0.3,
             color: Colors.white,
           ),
         ),
         textTheme: TextTheme(
-          bodyText1: GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3, color: Colors.white),
-          bodyText2: GoogleFonts.montserrat(fontWeight: FontWeight.w500, letterSpacing: -0.3, color: Colors.white),
+          bodyText1: GoogleFonts.montserrat(
+            fontWeight: FontWeight.w400,
+            letterSpacing: -0.3,
+            color: const Color(0xFF3300FF),
+          ),
+          headline5: GoogleFonts.montserrat(
+              fontSize: 18, fontWeight: FontWeight.w500, letterSpacing: -0.3, color: Colors.white),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -40,7 +45,7 @@ class MyApp extends StatelessWidget {
 }
 
 const MaterialColor primaryBlack = MaterialColor(
-  0xFF000000,
+  0xFF3300FF,
   <int, Color>{
     50: Colors.black12,
     100: Colors.black12,
