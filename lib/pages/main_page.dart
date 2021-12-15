@@ -242,22 +242,24 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _loader() => const Center(child: CircularProgressIndicator(color: Colors.white));
+  Widget _loader() => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator(color: Colors.white)));
 
   Widget _message(IconData icon, String text) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height - 56,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 96),
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Text(text, style: Theme.of(context).textTheme.headline5),
-            ),
-          ],
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height - 56,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 96),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(text, style: Theme.of(context).textTheme.headline5),
+              ),
+            ],
+          ),
         ),
       ),
     );
