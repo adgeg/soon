@@ -67,14 +67,33 @@ class _MainPageState extends State<MainPage> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Center(child: Text("Soon")),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
-          body: RefreshIndicator(
-            onRefresh: () async => await _refreshAnnonces(),
-            child: _content(),
+          body: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: const SliverAppBar(
+                    title: Center(child: Text("Soon")),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                  ),
+                )
+              ];
+            },
+            body: Builder(
+              builder: (context) {
+                return RefreshIndicator(
+                  onRefresh: () async => await _refreshAnnonces(),
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+                      _content(),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         )
       ],
@@ -124,17 +143,18 @@ class _MainPageState extends State<MainPage> {
 
   Widget _annonces() {
     Future.delayed(const Duration(milliseconds: 0), () => _previousDisplayedAnnonces.addAll(_displayedAnnonces));
-    return ListView.builder(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: _displayedAnnonces.length,
-      itemBuilder: (BuildContext context, int index) {
-        final annonce = _displayedAnnonces[index];
-        return _annonce(
-          annonce: annonce,
-          annonceIndex: index,
-          animateAppearance: !_previousDisplayedAnnonces.contains(annonce),
-        );
-      },
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          final annonce = _displayedAnnonces[index];
+          return _annonce(
+            annonce: annonce,
+            annonceIndex: index,
+            animateAppearance: !_previousDisplayedAnnonces.contains(annonce),
+          );
+        },
+        childCount: _displayedAnnonces.length,
+      ),
     );
   }
 
@@ -225,22 +245,19 @@ class _MainPageState extends State<MainPage> {
   Widget _loader() => const Center(child: CircularProgressIndicator(color: Colors.white));
 
   Widget _message(IconData icon, String text) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height - 56,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 96),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text(text, style: Theme.of(context).textTheme.headline5),
-              ),
-            ],
-          ),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height - 56,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 96),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text(text, style: Theme.of(context).textTheme.headline5),
+            ),
+          ],
         ),
       ),
     );
